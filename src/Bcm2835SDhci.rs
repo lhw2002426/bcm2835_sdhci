@@ -464,7 +464,7 @@ impl EmmcCtl {
         return self.failed() && (self.last_error & (1 << SD_ERR_BASE + SD_ERR_TUNING)) != 0;
     }
     ///blocksize
-    pub fn block_size(&self) -> usize{
+    pub fn get_block_size(&self) -> usize{
         self.block_size
     }
     ///sd_power_off
