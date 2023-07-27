@@ -1,8 +1,15 @@
 //! BCM2386 Quad-A7 control
 //! ref: BCM2836 ARM-local peripherals (Quad-A7 control)
 
-use crate::addr::CONTROL_BASE;
 use volatile::*;
+
+pub const VA_BASE: usize = 0xFFFF_0000_0000_0000;
+
+pub const PERIPHERALS_START: usize = 0x3F00_0000;
+pub const PERIPHERALS_END: usize = 0x4000_1000;
+pub const CONTROL_START: usize = 0x4000_0000;
+pub const IO_BASE: usize = VA_BASE + PERIPHERALS_START;
+pub const CONTROL_BASE: usize = VA_BASE + CONTROL_START;
 
 /// Local timer, IRQs, mailboxes registers (ref: QA7 chapter 4, page 7)
 #[allow(non_snake_case)]

@@ -9,9 +9,7 @@
 #[macro_use]
 extern crate log;
 pub mod Bcm2835SDhci;
-pub mod addr;
 pub mod emmc;
-pub mod interrupt;
 pub mod qa7_control;
 pub mod timer;
 
