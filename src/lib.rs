@@ -15,7 +15,7 @@ pub mod interrupt;
 pub mod qa7_control;
 pub mod timer;
 
-pub enum DevError {
+pub enum SDHCIError {
     /// An entity already exists.
     AlreadyExists,
     /// Try again, for non-blocking APIs.
@@ -35,4 +35,4 @@ pub enum DevError {
 }
 
 /// A specialized `Result` type for device operations.
-pub type DevResult<T = ()> = Result<T, DevError>;
+pub type SDHCIResult<T = ()> = Result<T, SDHCIError>;

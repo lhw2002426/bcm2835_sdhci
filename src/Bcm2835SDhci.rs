@@ -5,7 +5,7 @@ use core::mem;
 use core::slice;
 use core::time::Duration;
 use crate::emmc::*;
-use crate::{DevResult,DevError};
+use crate::{SDHCIResult,SDHCIError};
 
 pub const BLOCK_SIZE: usize = 512;
 
@@ -520,7 +520,7 @@ impl EmmcCtl {
         return 0;
         /*let buf = mailbox::get_clock_rate(0x1);
         debug!("after mailbox");
-        //let buf:Result<u32, DevError> = Ok(1800000000);
+        //let buf:Result<u32, SDHCIError> = Ok(1800000000);
         if buf.is_ok() {
             let base_clock = buf.unwrap();
             info!("EmmcCtl: base clock rate is {}Hz.", base_clock);
@@ -1390,7 +1390,7 @@ impl EmmcCtl {
     }
 
     ///read_block
-    pub fn read_block(&mut self, block_no_arg: u32, count: usize, buf: &mut [u32]) -> DevResult {
+    pub fn read_block(&mut self, block_no_arg: u32, count: usize, buf: &mut [u32]) -> SDHCIResult {
         let mut block_no = block_no_arg;
         if !self.card_supports_sdhc {
             block_no *= 512;
@@ -1447,11 +1447,11 @@ impl EmmcCtl {
             }
         }
         self.card_rca = 0;
-        Err(DevError::Io)
+        Err(SDHCIError::Io)
     }
 
     ///write_block
-    pub fn write_block(&mut self, block_no_arg: u32, count: usize, buf: &[u32]) -> DevResult {
+    pub fn write_block(&mut self, block_no_arg: u32, count: usize, buf: &[u32]) -> SDHCIResult {
         let mut block_no = block_no_arg;
         if !self.card_supports_sdhc {
             block_no *= 512;
@@ -1508,7 +1508,7 @@ impl EmmcCtl {
             }
         }
         self.card_rca = 0;
-        Err(DevError::Io)
+        Err(SDHCIError::Io)
     }
     ///Emmcctl init
     pub fn init(&mut self) -> i32 {
