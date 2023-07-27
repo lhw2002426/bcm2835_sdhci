@@ -463,6 +463,10 @@ impl EmmcCtl {
     fn tuning_error(&self) -> bool {
         return self.failed() && (self.last_error & (1 << SD_ERR_BASE + SD_ERR_TUNING)) != 0;
     }
+    ///blocksize
+    pub fn block_size(&self) -> usize{
+        self.block_size
+    }
     ///sd_power_off
     pub fn sd_power_off(&mut self) {
         let ctl0 = self.emmc.registers.CONTROL0.read();
