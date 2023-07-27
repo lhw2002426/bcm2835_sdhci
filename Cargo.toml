@@ -1,5 +1,5 @@
 [package]
-name = "bcm2835_sdhci"
+name = "bcm2835-sdhci"
 version = "0.1.0"
 edition = "2021"
 authors = ["HaoWen Liu <1466397747@qq.com>"]
