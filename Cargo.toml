@@ -1,0 +1,12 @@
+[package]
+name = "bcm2835_sdhci"
+version = "0.1.0"
+edition = "2021"
+authors = ["HaoWen Liu <1466397747@qq.com>"]
+description = "sd card driver for raspi4"
+
+[dependencies]
+log = "0.4"
+tock-registers = "0.8"
+volatile = "0.2.4"
+aarch64-cpu = "9.3"
