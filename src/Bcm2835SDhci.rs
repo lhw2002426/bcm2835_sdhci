@@ -463,15 +463,6 @@ impl EmmcCtl {
     fn tuning_error(&self) -> bool {
         return self.failed() && (self.last_error & (1 << SD_ERR_BASE + SD_ERR_TUNING)) != 0;
     }
-    ///blocksize
-    pub fn get_block_size(&self) -> usize{
-        self.block_size
-    }
-    ///sd_power_off
-    pub fn sd_power_off(&mut self) {
-        let ctl0 = self.emmc.registers.CONTROL0.read();
-        self.emmc.registers.CONTROL0.write(ctl0 & !(1 << 8));
-    }
     ///print value of reg to debug
     pub fn dumpregs(&mut self) {
         debug!("===========================================");
@@ -512,6 +503,19 @@ impl EmmcCtl {
         debug!("Host ctl2: 0x{:X}", self.emmc.registers.CONTROL2.read());
 
         debug!("===========================================");
+    }
+    ///sd_power_off
+    pub fn sd_power_off(&mut self) {
+        let ctl0 = self.emmc.registers.CONTROL0.read();
+        self.emmc.registers.CONTROL0.write(ctl0 & !(1 << 8));
+    }
+    ///blocksize
+    pub fn get_block_size(&self) -> usize{
+        self.block_size
+    }
+    ///blocknum
+    pub fn get_block_num(&self) -> usize{
+        4194304
     }
     ///get_base_clock_hz
     pub fn sd_get_base_clock_hz(&mut self) -> u32 {
