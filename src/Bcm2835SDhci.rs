@@ -326,6 +326,7 @@ pub struct EmmcCtl {
     use_sdma: bool,
     card_removal: bool,
     base_clock: u32,
+    block_num:u64,
 }
 
 fn usleep(cnt: usize) {
@@ -391,6 +392,19 @@ macro_rules! timeout_wait {
     }};
 }
 
+pub fn unstuff_bits(resp: &[u32], start: usize, size: usize) -> u32 {
+    let mask = if size < 32 { (1 << size) - 1 } else { 0 };
+    let off = 3 - (start / 32);
+    let shft = start & 31;
+    let mut res = resp[off as usize] >> shft;
+    
+    if size + shft > 32 {
+        res |= resp[(off - 1) as usize] << ((32 - shft) % 32);
+    }
+    
+    res & mask
+}
+
 impl EmmcCtl {
     ///new Emmcctl
     pub fn new() -> EmmcCtl {
@@ -418,6 +432,7 @@ impl EmmcCtl {
             use_sdma: false,
             card_removal: false,
             base_clock: 0,
+            block_num: 0,
         }
     }
 
@@ -514,8 +529,8 @@ impl EmmcCtl {
         self.block_size
     }
     ///blocknum
-    pub fn get_block_num(&self) -> u64{
-        4194304
+    pub fn get_block_num(&mut self) -> u64{
+        self.block_num
     }
     ///get_base_clock_hz
     pub fn sd_get_base_clock_hz(&mut self) -> u32 {
@@ -1269,6 +1284,23 @@ impl EmmcCtl {
             warn!("EmmcCtl: Not ready for data.");
             return false;
         }
+
+        //get the sd card capacity from CSD
+        if !self.sd_issue_command(SEND_CSD, self.card_rca << 16, 500000) {
+            debug!("fail to send CSD");
+        }
+
+        info!(
+            "EmmcCtl: card CSD: {:08X} {:08X} {:08X} {:08X}",
+            self.last_r[0], self.last_r[1], self.last_r[2], self.last_r[3]
+        );
+        let csize = unstuff_bits(&self.last_r, 62, 12) as u64;
+        let cmut = unstuff_bits(&self.last_r, 47, 3)as u64;
+        let large_size = unstuff_bits(&self.last_r, 48,22);
+        let read_blkbits = unstuff_bits(&self.last_r, 80,4) as u64;
+        let small_size = (1+csize)<<(2+cmut);
+        debug!("size maybe: csize: {}, cmut {}, small_size:{}, read_blk: {}, large_size: {}",csize,cmut,(1+csize)<<(2+cmut),read_blkbits,large_size);
+        self.block_num = small_size << (read_blkbits-9);
 
         // Now select the card (toggles it to transfer state)
         info!("EmmcCtl: Toggle the card to transfer state.");
