@@ -529,7 +529,7 @@ impl EmmcCtl {
         self.block_size
     }
     ///blocknum
-    pub fn get_block_num(&mut self) -> u64{
+    pub fn get_block_num(&self) -> u64{
         self.block_num
     }
     ///get_base_clock_hz
