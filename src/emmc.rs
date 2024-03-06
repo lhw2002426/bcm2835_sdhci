@@ -1,7 +1,7 @@
 use volatile::Volatile;
 
 //pub const EMMC_BASE: usize = IO_BASE + 0x300000;
-pub const EMMC_BASE: usize = 0xFE340000;
+pub const EMMC_BASE: usize = 0xFFFF0000FE340000;
 
 #[repr(C)]
 #[allow(non_snake_case)]
